@@ -34,7 +34,6 @@ mergeDataset <- function() {
 
     merged_dataset <<- cbind(merged_subjects, merged_labels, merged_sets)
 
-    display(head(merged_dataset))
     print("Train and test datasets merged successfully!")
 }
 

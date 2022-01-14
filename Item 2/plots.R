@@ -1,12 +1,18 @@
+# Import required libraries
+
 library(dplyr)
 library(lubridate)
 library(ggplot2)
 library(ggpubr)
 library(scales)
 
+# Import required data from dataset file
+
 data <- read.table("specdata/household_power_consumption.txt", header = TRUE, sep=";", na.strings = "?") %>%
     mutate(DateTime = dmy_hms(paste(Date, Time))) %>%
     filter(DateTime >= ymd("2007-02-01"), DateTime < ymd("2007-02-03"))
+
+# Construct plot 1
 
 plot1 <- data %>%
     select(Global_active_power) %>%
@@ -25,6 +31,8 @@ plot1 <- data %>%
         xlab("Global Active Power (kilowatts)") + 
         theme(axis.title.y = element_blank())
 
+# Construct plot 2
+
 plot2 <- data %>%
     select(Global_active_power, DateTime) %>%
     ggplot(aes(x = DateTime, y = Global_active_power)) +
@@ -38,6 +46,8 @@ plot2 <- data %>%
 
         ylab("Global Active Power (kilowatts)") + 
         theme(axis.title.x = element_blank())
+
+# Construct plot 3
 
 plot3 <- data %>%
     select(Sub_metering_1, Sub_metering_2, Sub_metering_3, DateTime) %>%
@@ -59,6 +69,8 @@ plot3 <- data %>%
         ylab("Energy sub metering") + 
         theme(axis.title.x = element_blank())
 
+# Construct plot 4 subplot 2
+
 plot4_2 <- data %>%
     select(Voltage, DateTime) %>%
     ggplot(aes(x = DateTime, y = Voltage)) +
@@ -70,6 +82,8 @@ plot4_2 <- data %>%
         geom_line() +
         scale_x_datetime(labels = date_format("%A"))
 
+# Construct plot 4 subplot 4
+
 plot4_4 <- data %>%
     select(Global_reactive_power, DateTime) %>%
     ggplot(aes(x = DateTime, y = Global_reactive_power)) +
@@ -80,6 +94,8 @@ plot4_4 <- data %>%
 
         geom_line() +
         scale_x_datetime(labels = date_format("%A"))
+
+# Arrange subplots into a single plot
 
 plot4 <- ggarrange(plot2 +
                        ylab("Global Active Power") +
@@ -93,6 +109,8 @@ plot4 <- ggarrange(plot2 +
                    plot4_4 +
                        theme(plot.margin = unit(c(0.75, 0.75, 0.75, 0.75), "cm")),
                    ncol = 2, nrow = 2)
+
+# Export plots as PNG
 
 png(file = "plot1.png")
 plot1

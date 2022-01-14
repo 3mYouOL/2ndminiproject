@@ -1,4 +1,8 @@
+# Import required libraries
+
 library(dplyr)
+
+# Import required data from dataset files
 
 importDataset <- function() {
     activity_labels <<- read.table("specdata/activity_labels.txt", col.names = c("activity_id", "activity_name"))
@@ -14,6 +18,8 @@ importDataset <- function() {
 
     print("Datasets imported successfully!")
 }
+
+# Merge train and test dataset
 
 mergeDataset <- function() {
     if (!(exists("activity_labels") &&
@@ -37,6 +43,8 @@ mergeDataset <- function() {
     print("Train and test datasets merged successfully!")
 }
 
+# Select measurement columns labeled with mean or std
+
 extractMeansStd <- function() {
     if (!exists("merged_dataset")) {
         mergeDataset()
@@ -45,6 +53,8 @@ extractMeansStd <- function() {
     merged_dataset %>%
         select("subject_id", "activity_name", contains("mean") | contains("std"))
 }
+
+# Create a separate dataset summarizing the means of each measurement from the previous function
 
 generateTidyMeans <- function() {    
     tidy_means <<- extractMeansStd() %>% 
